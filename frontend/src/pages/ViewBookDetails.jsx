@@ -75,7 +75,7 @@ const ViewBookDetails = () => {
         <div className="bg-zinc-900  px-12 py-8 flex flex-col lg:flex-row gap-8 h-auto">
           <div>
             <Link to={"/all-books"} >
-          <div className="text-white bg-slate-600 p-2 rounded-md">
+          <div className="text-white bg-slate-600 p-2 inline-block rounded-md">
               <MdArrowBackIosNew/>
           </div>
             </Link>
