@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios";
+
 const AddBook = () => {
-  const [Data, setData] = useState({
+  const [data, setData] = useState({
     url: "",
     title: "",
     author: "",
@@ -11,144 +11,159 @@ const AddBook = () => {
     desc: "",
     language: "",
   });
-  
-  
+
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
   };
 
-  const change = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setData({ ...Data, [name]: value });
+    setData({ ...data, [name]: value });
   };
-  const submit = async (e) => {
-    e.preventDefault()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       if (
-        Data.url === "" ||
-        Data.title === "" ||
-        Data.author === "" ||
-        Data.price === "" ||
-        Data.desc === "" ||
-        Data.language === ""
+        !data.url ||
+        !data.title ||
+        !data.author ||
+        !data.price ||
+        !data.desc ||
+        !data.language
       ) {
-        toast.error("All fields are required!")
-      } else {
-        const response = await axiosInstance.post("/add-book",
-          Data,
-          { headers })
-        setData({
-          url: "",
-          title: "",
-          author: "",
-          price: "",
-          desc: "",
-          language: "",
-        });
-        toast.success(response.data.message)
+        toast.error("All fields are required!");
+        return;
       }
+
+      const response = await axiosInstance.post("/add-book", data, { headers });
+      setData({
+        url: "",
+        title: "",
+        author: "",
+        price: "",
+        desc: "",
+        language: "",
+      });
+      toast.success(response.data.message);
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
   return (
-    <div className="h-[100%] p-0 md:p-4">
-      <h1 className=" text-3xl md:text-5xl font-semibold text-zinc-500 mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-4 sm:px-8 py-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-gray-500 mb-8">
         Add Book
       </h1>
-      <div className="p-4 bg-zinc-800 rounded">
-        <div>
-          <label htmlFor="" className="text-zinc-400">
-            Image
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg shadow-lg p-6">
+        {/* Image URL */}
+        <div className="mb-6">
+          <label htmlFor="url" className="block text-sm font-medium text-gray-300 mb-2">
+            Image URL
           </label>
           <input
             type="text"
-            className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-            placeholder="url of image"
+            id="url"
             name="url"
+            value={data.url}
+            onChange={handleChange}
+            placeholder="Enter image URL"
+            className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             required
-            value={Data.url}
-            onChange={change}
           />
         </div>
-        <div className="mt-4">
-          <label htmlFor="" className="text-zinc-400">
-            Title of book
+
+        {/* Title */}
+        <div className="mb-6">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-300 mb-2">
+            Title
           </label>
           <input
             type="text"
-            className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-            placeholder="title of book"
+            id="title"
             name="title"
+            value={data.title}
+            onChange={handleChange}
+            placeholder="Enter book title"
+            className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             required
-            value={Data.title}
-            onChange={change}
           />
         </div>
-        <div className="mt-4">
-          <label htmlFor="" className="text-zinc-400">
-            Author of book
+
+        {/* Author */}
+        <div className="mb-6">
+          <label htmlFor="author" className="block text-sm font-medium text-gray-300 mb-2">
+            Author
           </label>
           <input
             type="text"
-            className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-            placeholder="author of book"
+            id="author"
             name="author"
+            value={data.author}
+            onChange={handleChange}
+            placeholder="Enter author name"
+            className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             required
-            value={Data.author}
-            onChange={change}
           />
         </div>
-        <div className="mt-4 flex gap-4">
-          <div className="w-3/6">
-            <label htmlFor="" className="text-zinc-400">
+
+        {/* Language and Price */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label htmlFor="language" className="block text-sm font-medium text-gray-300 mb-2">
               Language
             </label>
             <input
               type="text"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-              placeholder="language of book"
+              id="language"
               name="language"
+              value={data.language}
+              onChange={handleChange}
+              placeholder="Enter book language"
+              className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               required
-              value={Data.language}
-              onChange={change}
             />
           </div>
-          <div className="w-3/6">
-            <label htmlFor="" className="text-zinc-400">
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-2">
               Price
             </label>
             <input
               type="number"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-              placeholder="price of book"
+              id="price"
               name="price"
+              value={data.price}
+              onChange={handleChange}
+              placeholder="Enter book price"
+              className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               required
-              value={Data.price}
-              onChange={change}
             />
           </div>
         </div>
-        <div className="mt-4">
-          <label htmlFor="" className="text-zinc-400">
-            Description of book
+
+        {/* Description */}
+        <div className="mb-6">
+          <label htmlFor="desc" className="block text-sm font-medium text-gray-300 mb-2">
+            Description
           </label>
           <textarea
-            className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none "
-            rows="5"
-            placeholder="description of book"
+            id="desc"
             name="desc"
+            value={data.desc}
+            onChange={handleChange}
+            placeholder="Enter book description"
+            rows="5"
+            className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             required
-            value={Data.desc}
-            onChange={change}
           />
         </div>
 
+        {/* Submit Button */}
         <button
-          className=" mt-4 px-3 bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition-all duration-300"
-          onClick={submit}
+          onClick={handleSubmit}
+          className="w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Add Book
         </button>

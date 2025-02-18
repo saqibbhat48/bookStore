@@ -72,7 +72,7 @@ const ViewBookDetails = () => {
       {!Book && <Loader />}
       {Book && (
         <>
-        <div className="bg-zinc-900  px-12 py-8 flex flex-col lg:flex-row gap-8 h-auto">
+        <div className="bg-gradient-to-br from-gray-900 to-gray-800  px-12 py-8 flex flex-col lg:flex-row gap-8 h-auto">
           <div>
             <Link to={"/all-books"} >
           <div className="text-white bg-slate-600 p-2 inline-block rounded-md">
@@ -81,7 +81,7 @@ const ViewBookDetails = () => {
             </Link>
           </div>
           <div className="w-full lg:w-3/6 ">
-            <div className=" flex flex-col md:flex-row items-start justify-around  bg-zinc-800 rounded px-4 py-8 gap-4 ">
+            <div className=" flex flex-col md:flex-row items-start justify-around  bg-slate-900 shadow-md shadow-slate-700 rounded px-4 py-8 gap-4 ">
               <img
                 src={Book.url}
                 alt="book"

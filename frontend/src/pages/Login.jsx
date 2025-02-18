@@ -1,102 +1,127 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
 import { authActions } from "../store/auth";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 
 const Login = () => {
-  const [Data, setData] = useState({ username: "", password: "" });
-  const history = useNavigate();
+  const [data, setData] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  
-  useEffect(() => {
-    if (isLoggedIn === true) {
-      history("/");
-    }
-  }, )
-  
-
   const dispatch = useDispatch();
-  const change = (e) => {
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setData({ ...Data, [name]: value });
+    setData({ ...data, [name]: value });
   };
-  const submit = async (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (Data.username === "" || Data.password === "") {
-        toast.error("All fields are required")
-      } else {
-        const response = await axiosInstance.post('/login',
-          Data)
-        setData({ username: "", password: "" });
-        dispatch(authActions.login());
-        history("/profile");
-        dispatch(authActions.changeRole(response.data.role));
-        localStorage.setItem("id", response.data._id);
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", response.data.role);
-        toast.success("Logged In Successfully")
+      if (!data.username || !data.password) {
+        toast.error("All fields are required");
+        return;
       }
+
+      const response = await axiosInstance.post("/login", data);
+      setData({ username: "", password: "" });
+      dispatch(authActions.login());
+      dispatch(authActions.changeRole(response.data.role));
+      localStorage.setItem("id", response.data._id);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+      toast.success("Logged in successfully");
+      navigate("/profile");
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
+
   return (
-    <div className="h-screen bg-zinc-900 px-12 py-8 flex items-center justify-center">
-      <div className="bg-zinc-800 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
-        <p className="text-zinc-200 text-xl">Login</p>
-        <div className="mt-4">
-          <div>
-            <label htmlFor="user" className="text-zinc-400">
-              Username
-            </label>
-            <input
-              type="text"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-              placeholder="username"
-              name="username"
-              required
-              value={Data.username}
-              onChange={change}
-              id="user"
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="pass" className="text-zinc-400">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none "
-              placeholder="password"
-              name="password"
-              required
-              value={Data.password}
-              onChange={change}
-              id="pass"
-            />
-          </div>
-          <div className="mt-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col items-center justify-center p-4">
+      {/* Admin Credentials Card */}
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 mb-8 shadow-lg border border-gray-700/30">
+        <h2 className="text-lg font-semibold text-white mb-2">Admin Credentials</h2>
+        <div className="text-gray-300">
+          <p>Username: <span className="font-mono">admin</span></p>
+          <p>Password: <span className="font-mono">admin123</span></p>
+        </div>
+        <p className="text-sm text-yellow-400 mt-2">To buy books, sign up and log in.</p>
+      </div>
+
+      {/* Login Form */}
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700/30 p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-white mb-6 text-center">Login</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6">
+            {/* Username Field */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={data.username}
+                onChange={handleChange}
+                placeholder="Enter your username"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Login Button */}
             <button
-              className="w-full bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition-all duration-300"
-              onClick={submit}
+              type="submit"
+              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              LogIn
+              Log In
             </button>
           </div>
-          <p className="flex mt-4 items-center justify-center text-zinc-200 font-semibold">
-            Or
-          </p>
-          <p className="flex mt-4 items-center justify-center text-zinc-500 font-semibold">
-            Don't have an account? &nbsp;
-            <Link to="/signup" className="hover:text-blue-500">
-              <u>Sign Up</u>
-            </Link>
-          </p>
+        </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 h-px bg-gray-700/50"></div>
+          <span className="mx-4 text-gray-400">OR</span>
+          <div className="flex-1 h-px bg-gray-700/50"></div>
         </div>
+
+        {/* Sign Up Link */}
+        <p className="text-center text-gray-400">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-500 hover:text-blue-400 transition-all duration-300"
+          >
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -1,84 +1,102 @@
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 
 const Settings = () => {
-  const [ProfileData, setProfileData] = useState();
-  const [Value, setValue] = useState({ address: "" });
-  const change = (e) => {
-    const { name, value } = e.target;
-    setValue({ ...Value, [name]: value });
-  };
+  const [profileData, setProfileData] = useState(null);
+  const [values, setValues] = useState({ address: "" });
+
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
   };
 
   useEffect(() => {
-    const fetch = async () => {
-      const response = await axiosInstance.get("/getUserData",
-        { headers })
-      setProfileData(response.data);
-      setValue({ address: response.data.address });
+    const fetchProfileData = async () => {
+      try {
+        const response = await axiosInstance.get("/getUserData", { headers });
+        setProfileData(response.data);
+        setValues({ address: response.data.address });
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
     };
-    fetch();
+    fetchProfileData();
   }, []);
 
-  const updateAddress = async () => {
-    const res = await axiosInstance.put("/update-user-address",
-      Value,
-      {
-        headers,
-      })
-    toast.success(res.data.message)
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
   };
+
+  const handleUpdateAddress = async () => {
+    if(!values.address) return toast.error("Address can't be empty")
+    try {
+      const response = await axiosInstance.put("/update-user-address", values, { headers });
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "An error occurred");
+    }
+  };
+
   return (
-    <>
-      {" "}
-      {!ProfileData && <Loader />}{" "}
-      {ProfileData && (
-        <div className="h-[100%] p-0 md:p-4 text-zinc-100">
-          <h1 className=" text-3xl md:text-5xl font-semibold text-zinc-500 mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-4 sm:px-8 py-8">
+      {!profileData && <Loader />}
+      {profileData && (
+        <div className="text-gray-100">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-500 mb-8">
             Settings
           </h1>
-          <div className="flex gap-12">
-            <div className="">
-              <label htmlFor="">Username</label>
-              <p className="p-2 rounded bg-zinc-800 mt-2 font-semibold">
-                {ProfileData.username}
-              </p>
+
+          {/* Username and Email Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+                Username
+              </label>
+              <div className="p-3 bg-gray-800/50 backdrop-blur-sm rounded-lg text-gray-100">
+                {profileData.username}
+              </div>
             </div>
-            <div className="">
-              <label htmlFor="">Email</label>
-              <p className="p-2 rounded bg-zinc-800 mt-2 font-semibold">
-                {ProfileData.email}
-              </p>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                Email
+              </label>
+              <div className="p-3 bg-gray-800/50 backdrop-blur-sm rounded-lg text-gray-100">
+                {profileData.email}
+              </div>
             </div>
           </div>
-          <div className="mt-4 flex flex-col ">
-            <label htmlFor="">Address</label>
+
+          {/* Address Section */}
+          <div className="mb-8">
+            <label htmlFor="address" className="block text-sm font-medium text-gray-300 mb-2">
+              Address
+            </label>
             <textarea
-              className="p-2 rounded bg-zinc-800 mt-2 font-semibold"
-              rows="5"
-              placeholder="Address"
+              id="address"
               name="address"
-              value={Value.address}
-              onChange={change}
+              value={values.address}
+              onChange={handleChange}
+              placeholder="Enter your address"
+              rows="5"
+              className="w-full p-3 bg-gray-800/50 backdrop-blur-sm rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="mt-4 flex justify-end ">
+
+          {/* Update Button */}
+          <div className="flex justify-end">
             <button
-              className="bg-yellow-500 text-zinc-900 font-semibold px-3 py-2 rounded hover:bg-yellow-400 transition-all duration-300"
-              onClick={updateAddress}
+              onClick={handleUpdateAddress}
+              className="px-6 py-3 bg-yellow-500 text-gray-950 font-semibold rounded-lg hover:bg-yellow-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
               Update
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

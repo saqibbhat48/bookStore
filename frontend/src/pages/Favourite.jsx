@@ -18,7 +18,7 @@ const Favourite = () => {
       setFavBooks(res.data.data);
     };
     fetch();
-  }, []);
+  }, [headers]);
 
   return (
     <>

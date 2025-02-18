@@ -1,126 +1,147 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 
 const Signup = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  if (isLoggedIn === true) {
-    history("/");
-  }
-  const [Data, setData] = useState({
+  const [data, setData] = useState({
     username: "",
     email: "",
     password: "",
     address: "",
   });
 
-  const change = (e) => {
+  if (isLoggedIn) {
+    navigate("/");
+  }
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setData({ ...Data, [name]: value });
+    setData({ ...data, [name]: value });
   };
-  const submit = async () => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      if (
-        Data.username === "" ||
-        Data.email === "" ||
-        Data.password === "" ||
-        Data.address === ""
-      ) {
-        alert("All fields are required");
-      } else {
-        const response = await axiosInstance.post("/sign-up",
-          Data)
-        setData({ username: "", email: "", password: "", address: "" });
-        toast.success("Signed Up successfully");
-        history("/login");
+      if (!data.username || !data.email || !data.password || !data.address) {
+        toast.error("All fields are required");
+        return;
       }
+
+      await axiosInstance.post("/sign-up", data);
+      setData({ username: "", email: "", password: "", address: "" });
+      toast.success("Signed up successfully");
+      navigate("/login");
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
+
   return (
-    <div className="h-auto bg-zinc-900 px-12 py-8 flex items-center justify-center">
-      <div className="bg-zinc-800 rounded-lg px-8 py-5 w-full md:w-3/6 lg:w-2/6">
-        <p className="text-zinc-200 text-xl">Sign Up</p>
-        <div className="mt-4">
-          <div>
-            <label htmlFor="" className="text-zinc-400">
-              Username
-            </label>
-            <input
-              type="text"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-              placeholder="username"
-              name="username"
-              required
-              value={Data.username}
-              onChange={change}
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="" className="text-zinc-400">
-              Email
-            </label>
-            <input
-              type="text"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none"
-              placeholder="xyz@example.com"
-              name="email"
-              required
-              value={Data.email}
-              onChange={change}
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="" className="text-zinc-400">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none "
-              placeholder="password"
-              name="password"
-              required
-              value={Data.password}
-              onChange={change}
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="" className="text-zinc-400">
-              Address
-            </label>
-            <textarea
-              className="w-full mt-2 bg-zinc-900 text-zinc-100 p-2 outline-none "
-              rows="5"
-              placeholder="address"
-              name="address"
-              required
-              value={Data.address}
-              onChange={change}
-            />
-          </div>
-          <div className="mt-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
+      {/* Signup Form */}
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-700/30 p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-white mb-6 text-center">Sign Up</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-6">
+            {/* Username Field */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={data.username}
+                onChange={handleChange}
+                placeholder="Enter your username"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Address Field */}
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-300 mb-2">
+                Address
+              </label>
+              <textarea
+                id="address"
+                name="address"
+                value={data.address}
+                onChange={handleChange}
+                placeholder="Enter your address"
+                rows="4"
+                className="w-full px-4 py-3 bg-gray-700/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+            </div>
+
+            {/* Signup Button */}
             <button
-              className="w-full bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition-all duration-300"
-              onClick={submit}
+              type="submit"
+              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              SignUp
+              Sign Up
             </button>
           </div>
-          <p className="flex mt-4 items-center justify-center text-zinc-200 font-semibold">
-            Or
-          </p>
-          <p className="flex mt-4 items-center justify-center text-zinc-500 font-semibold">
-            Already have an account? &nbsp;
-            <Link to="/login" className="hover:text-blue-500">
-              <u>LogIn</u>
-            </Link>
-          </p>
+        </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 h-px bg-gray-700/50"></div>
+          <span className="mx-4 text-gray-400">OR</span>
+          <div className="flex-1 h-px bg-gray-700/50"></div>
         </div>
+
+        {/* Login Link */}
+        <p className="text-center text-gray-400">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-blue-500 hover:text-blue-400 transition-all duration-300"
+          >
+            Log In
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const Sidebar = ({ ProfileData }) => {
   }
 
   return (
-    <div className="h-auto lg:h-[100%] flex flex-col p-3 items-center justify-between">
+    <div className="h-auto lg:h-[100%] flex flex-col p-3 items-center bg-gradient-to-br from-gray-900 to-gray-800  justify-between">
       <div className="flex flex-col items-center w-full">
         <img src={ProfileData.avatar} alt="profile" className="h-[10vh]" />
         <p className="mt-3 text-xl text-zinc-100 font-semibold">
@@ -35,19 +35,19 @@ const Sidebar = ({ ProfileData }) => {
         <div className="w-full  flex-col items-center justify-center hidden lg:flex">
           <Link
             to="/profile"
-            className="text-zinc-100 font-semibold w-full py-2 text-center hover:bg-zinc-900 rounded transition-all duration-300"
+            className="text-zinc-100 font-semibold w-full py-2 text-center hover:bg-slate-950 rounded transition-all duration-300"
           >
             Favourites
           </Link>
           <Link
             to="/profile/orderHistory"
-            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-zinc-900 rounded transition-all duration-300"
+            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-slate-950 rounded transition-all duration-300"
           >
             Order History
           </Link>
           <Link
             to="/profile/settings"
-            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-zinc-900 rounded transition-all duration-300"
+            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-slate-950 rounded transition-all duration-300"
           >
             Settings
           </Link>
@@ -57,20 +57,20 @@ const Sidebar = ({ ProfileData }) => {
         <div className="w-full  flex-col items-center justify-center hidden lg:flex">
           <Link
             to="/profile"
-            className='text-zinc-100 font-semibold w-full py-2 text-center hover:bg-zinc-900 rounded transition-all duration-300'
+            className='text-zinc-100 font-semibold w-full py-2 text-center hover:bg-slate-950 rounded transition-all duration-300'
           >
             All Orders
           </Link>
           <Link
             to="/profile/add-book"
-            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-zinc-900 rounded transition-all duration-300"
+            className="text-zinc-100 font-semibold w-full  py-2 mt-4 text-center hover:bg-slate-950 rounded transition-all duration-300"
           >
             Add Book
           </Link>
         </div>
       )}
       <button
-        className="bg-zinc-900 w-3/6 lg:w-full mt-4 lg:mt-0  text-white font-semibold flex items-center justify-center  py-2 rounded hover:bg-white hover:text-zinc-900 transition-all duration-300 "
+        className="bg-slate-950 5-3/6 lg:w-full px-4 lg:px-0 mt-4 lg:mt-0  text-white font-semibold flex items-center justify-center  py-2 rounded hover:bg-white hover:text-zinc-900 transition-all duration-300 "
         onClick={() => handleLogout()}
       >
         Log Out <FaArrowRightFromBracket className="ms-4" />

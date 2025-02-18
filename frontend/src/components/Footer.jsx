@@ -13,7 +13,7 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="bg-blue-600 px-12 py-8">
+    <div className="bg-slate-900 px-12 py-8">
       <div className="flex flex-col md:flex-row items-center justify-between">
         <h2 className="text-3xl font-semibold text-zinc-100">BookHeaven</h2>
         <div className="flex flex-col md:flex-row">

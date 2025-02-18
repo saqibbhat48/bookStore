@@ -14,7 +14,7 @@ const AllOrders = () => {
   const [userDivData, setuserDivData] = useState();
   const [Options, setOptions] = useState("hidden");
   const [EditableDiv, setEditableDiv] = useState(-1);
-  const [Values, setValues] = useState({ status: "" });
+  const [Values, setValues] = useState({ status: "Order Placed" });
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -38,6 +38,11 @@ const AllOrders = () => {
     const response = await axiosInstance.put(`/update-status/${id}`,
       Values,
       { headers })
+
+      console.log(i);
+      console.log(OrderHistory[i]);
+      
+      
     toast.success(response.data.message)
   };
 
@@ -63,7 +68,7 @@ const AllOrders = () => {
           <h1 className=" text-3xl md:text-5xl font-semibold text-zinc-500 mb-8">
             All Orders History
           </h1>
-          <div className="mt-4 bg-zinc-800 w-full rounded py-2 px-4 flex gap-2">
+          <div className="mt-4 bg-gradient-to-br from-gray-900 to-gray-800  w-full rounded py-2 px-4 flex gap-2">
             <div className="w-[3%]">
               <h1 className="text-center">Sr.</h1>
             </div>
@@ -86,7 +91,7 @@ const AllOrders = () => {
             </div>
           </div>
           {OrderHistory.map((items, i) => (
-            <div key={i} className=" bg-zinc-800 w-full rounded py-2 px-4 flex gap-2 hover:bg-zinc-900 hover:cursor-pointer transition-all duration-300 ">
+            <div key={i} className=" bg-gray-800 w-full rounded py-2 px-4 flex gap-2 hover:bg-slate-900 hover:cursor-pointer transition-all duration-300 ">
               <div className="w-[3%]">
                 <h1 className="text-center">{i + 1}</h1>
               </div>
@@ -109,7 +114,7 @@ const AllOrders = () => {
                   <button
                     className={`${
                       Options === "hidden" ? "block" : "hidden"
-                    } hover:scale-105 `}
+                    } hover:scale-105 transition-all duration-300 `}
                     onClick={() => setEditableDiv(i)}
                   >
                     {items.status === "Order placed" ? (
@@ -130,6 +135,7 @@ const AllOrders = () => {
                       id=""
                       className=" bg-gray-800"
                       onChange={change}
+                       
                     >
                       {[
                         "Order placed",
@@ -144,7 +150,7 @@ const AllOrders = () => {
                       ))}
                     </select>
                     <button
-                      className="text-green-500 hover:text-pink-600 mx-2"
+                      className="text-green-500 hover:text-pink-600 mx-2 transition-all duration-300"
                       onClick={() => {
                         setEditableDiv(-1);
                         submitChanges(i);
@@ -157,7 +163,7 @@ const AllOrders = () => {
               </div>
               <div className="w-[10%] md:w-[5%]  ">
                 <button
-                  className=" text-xl hover:text-orange-500"
+                  className=" text-xl hover:text-orange-500 transition-all duration-300"
                   onClick={() => {
                     setuserDiv("fixed");
                     setuserDivData(items.user);

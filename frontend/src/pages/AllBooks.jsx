@@ -18,7 +18,7 @@ const AllBooks = () => {
     <>
       {!Books && <Loader />}
       {Books &&(
-        <div className="h-auto min-h-dvh px-12 py-8 bg-zinc-900">
+        <div className="h-auto min-h-dvh px-12 py-8 bg-gradient-to-br from-gray-800 to-gray-700">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {Books.map((items, i) => (
               <BookCard

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { AiFillDelete } from 'react-icons/ai';
-import Loader from './Loader';
-import { fetchCart, deleteItem, placeOrder, calculateTotal } from '../store/cartActions';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AiFillDelete } from "react-icons/ai";
+import Loader from "./Loader";
+import { fetchCart, deleteItem, placeOrder, calculateTotal } from "../store/cartActions";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ const Cart = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate('/');
+      navigate("/");
     } else {
       dispatch(fetchCart());
     }
@@ -30,86 +30,85 @@ const Cart = () => {
 
   const handlePlaceOrder = () => {
     dispatch(placeOrder(cart));
-    navigate('/profile/orderHistory');
+    navigate("/profile/orderHistory");
   };
 
   return (
-    <div className="h-auto bg-zinc-900 px-12 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-4 sm:px-8 py-8">
       {!cart && <Loader />}
       {cart && cart.length === 0 && (
-        <div className="h-screen">
-          <div className="h-[100%] flex items-center justify-center flex-col">
-            <h1 className="text-5xl lg:text-6xl font-semibold text-zinc-400">
-              Empty Cart
-            </h1>
-            <img
-              src="/empty-cart.png"
-              alt="empty cart"
-              className="lg:h-[50vh]"
-            />
-          </div>
+        <div className="h-screen flex flex-col items-center justify-center">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-400 mb-8">
+            Your Cart is Empty
+          </h1>
+          <img
+            src="/empty-cart.png"
+            alt="Empty Cart"
+            className="w-64 sm:w-80 object-contain"
+          />
         </div>
       )}
       {cart && cart.length > 0 && (
         <>
-          <h1 className="text-5xl font-semibold text-zinc-500 mb-8">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-500 mb-8">
             Your Cart
           </h1>
-          {cart.map((item, i) => (
-            <div
-              className="w-full my-4 rounded flex flex-col md:flex-row p-4 bg-zinc-800 justify-between items-center"
-              key={i}
+          <div className="space-y-6">
+            {cart.map((item, i) => (
+              <div
+                key={i}
+                className="w-full bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 flex flex-col sm:flex-row items-center justify-between gap-6"
+              >
+                {/* Book Image */}
+                <img
+                  src={item.url}
+                  alt={item.title}
+                  className="w-32 h-32 sm:w-24 sm:h-24 object-cover rounded-lg"
+                />
+
+                {/* Book Details */}
+                <div className="flex-1">
+                  <h2 className="text-2xl font-semibold text-white">
+                    {item.title}
+                  </h2>
+                  <p className="text-gray-300 mt-2 text-sm sm:text-base">
+                    {item.desc.slice(0, 100)}...
+                  </p>
+                </div>
+
+                {/* Price and Delete Button */}
+                <div className="flex items-center gap-6">
+                  <h3 className="text-2xl font-semibold text-white">
+                    ₹ {item.price}
+                  </h3>
+                  <button
+                    onClick={() => handleDeleteItem(item._id)}
+                    className="bg-red-100 text-red-700 border border-red-700 hover:text-white hover:bg-red-700 hover:border-white transition-colors duration-300 rounded p-2 ms-12"
+                  >
+                    <AiFillDelete className="text-2xl" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Total Amount and Place Order Button */}
+          <div className="w-full flex  items-center justify-center md:justify-end">
+          <div className="mt-8 bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 ">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Order Summary
+            </h2>
+            <div className="flex items-center justify-between text-gray-300 text-lg">
+              <p>{cart.length} books</p>
+              <p>₹ {total}</p>
+            </div>
+            <button
+              onClick={handlePlaceOrder}
+              className="w-full mt-6 px-6 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
-              <img
-                src={item.url}
-                alt="/"
-                className="h-[20vh] md:h-[10vh] object-cover"
-              />
-              <div className="w-full md:w-auto">
-                <h1 className="text-2xl text-zinc-100 font-semibold text-start mt-2 md:mt-0">
-                  {item.title}
-                </h1>
-                <p className="text-normal text-zinc-300 mt-2 hidden lg:block">
-                  {item.desc.slice(0, 100)}...
-                </p>
-                <p className="text-normal text-zinc-300 mt-2 hidden md:block lg:hidden">
-                  {item.desc.slice(0, 65)}...
-                </p>
-                <p className="text-normal text-zinc-300 mt-2 block md:hidden">
-                  {item.desc.slice(0, 100)}...
-                </p>
-              </div>
-              <div className="flex mt-4 w-full md:w-auto items-center justify-between">
-                <h2 className="text-zinc-100 text-3xl font-semibold flex">
-                  ₹ {item.price}
-                </h2>
-                <button
-                  className="bg-red-100 text-red-700 border border-red-700 hover:text-white hover:bg-red-700 hover:border-white transition-colors duration-300 rounded p-2 ms-12"
-                  onClick={() => handleDeleteItem(item._id)}
-                >
-                  <AiFillDelete />
-                </button>
-              </div>
-            </div>
-          ))}
-          <div className="mt-4 w-full flex items-center justify-end">
-            <div className="p-4 bg-zinc-800 rounded">
-              <h1 className="text-3xl text-zinc-200 font-semibold">
-                Total Amount
-              </h1>
-              <div className="mt-3 flex items-center justify-between text-xl text-zinc-200">
-                <h2>{cart.length} books</h2>
-                <h2>₹ {total}</h2>
-              </div>
-              <div className="w-[100%] mt-3">
-                <button
-                  className="bg-zinc-100 rounded px-4 py-2 flex justify-center w-full font-semibold hover:bg-zinc-200"
-                  onClick={handlePlaceOrder}
-                >
-                  Place your order
-                </button>
-              </div>
-            </div>
+              Place Your Order
+            </button>
+          </div>
           </div>
         </>
       )}
